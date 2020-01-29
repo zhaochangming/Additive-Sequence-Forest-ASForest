@@ -22,12 +22,14 @@ output1: Outputs of Experiment 1
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_1.png)  
 
 output2: Outputs of Experiment 2
+
 Classification:
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_2_clf.png)  
 Regression:
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_2_reg.png)  
 
 output3: Outputs of Experiment 3
+
 Classification:
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_3_clf.png)  
 Regression:
