@@ -21,7 +21,11 @@ src/ASForest: Codes of ASForest
 output1: Outputs of Experiment 1
 
 output2: Outputs of Experiment 2
+![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_2_clf.png)  
+![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_2_reg.png)  
 
 output3: Outputs of Experiment 3
+![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_3_clf.png)  
+![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_3_reg.png)  
 
 output4: Codes of Experiment 4
