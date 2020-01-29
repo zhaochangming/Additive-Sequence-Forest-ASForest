@@ -30,3 +30,4 @@ output3: Outputs of Experiment 3
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_3_reg.png)  
 
 output4: Codes of Experiment 4
+![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_4.png)  
