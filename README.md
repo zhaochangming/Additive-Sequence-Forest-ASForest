@@ -18,7 +18,7 @@ Experiment_3_ClfLeafs and Experiment_3_RegLeafs: Codes of Experiment 3
 
 Experiment_4_LMT: Codes of Experiment 4
 
-src/ASForest: Codes of ASForest
+src/BoostForest: Codes of BoostForest
 
 output1: Outputs of Experiment 1
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/ex_1.png)  
