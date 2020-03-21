@@ -4,10 +4,10 @@ The paper is under-submitted.
 
 
 
-Structure of an ASTree with 4 leafs:
+Structure of an BoostTree with 4 leafs:
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/FigASTree.png)  
 
-Structure of an ASForest with K ASTrees:
+Structure of an BoostForest with K BoostTrees:
 ![maze](https://github.com/zhaochangming/Additive-Sequence-Forest-ASForest-/blob/master/FigASForest.png)  
 
 Experiment_1_Classification and Experiment_1_Regression: Codes of Experiment 1
