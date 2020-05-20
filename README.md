@@ -1,4 +1,4 @@
 # BoostForest
 
 Structure of an BoostTree with 4 leafs:
-![Alt text](https://github.com/zhaochangming/BoostForest/blob/master/FigASTree.png)  
+![pic](https://github.com/zhaochangming/BoostForest/blob/master/img/FigASTree.jpg)  
