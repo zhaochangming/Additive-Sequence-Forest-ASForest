@@ -2,6 +2,11 @@
 
 The paper is under-submitted.
 
+Run demo of classification task:
+python3 ./classification_task_demo.py
+
+Run demo of regression task:
+python3 ./regression_task_demo.py
 
 
 Structure of an BoostTree with 4 leafs:
