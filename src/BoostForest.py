@@ -5,7 +5,7 @@ import numpy as np
 from joblib import Parallel, delayed
 
 
-class ASForest:
+class BF:
     def __init__(self, model, numOfClf, n_jobs=None):
         self.model = model
         self.num = numOfClf
