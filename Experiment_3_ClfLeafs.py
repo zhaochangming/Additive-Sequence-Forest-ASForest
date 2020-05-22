@@ -1,9 +1,9 @@
 import os
 import numpy as np
-from src.ASTree import ASTree
+from src.BoostTree import BT
 from sklearn.model_selection import RepeatedKFold
 from sklearn import preprocessing
-from src.ASForest import ASForest
+from src.BoostForest import BF
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.model_selection import GridSearchCV
@@ -64,8 +64,7 @@ if __name__ == "__main__":
         print('X :', X.shape, '|label :', y.shape)
         _, y = np.unique(y, return_inverse=True)
         #
-        ASForest_RI_ACC = []
-        ASForest_RC_ACC = []
+        BoostForest_ACC = []
         RF_ACC = []
         ERT_ACC = []
         LGBM_ACC = []
@@ -132,31 +131,20 @@ if __name__ == "__main__":
                 LGBM_acc.append(clf.best_estimator_.score(test_X, test_y))
             LGBM_ACC.append(LGBM_acc)
 
-            # ASTree_RI
-            ASForest_acc = []
+            BoostForest_acc = []
             for i in leaf_nodes:
-                ASTree_RI = ASTree(max_patch=i, n_jobs=1, task='clf', RC='F')
-                ASForest_RI = ASForest(ASTree_RI, Num_of_Learners, n_jobs=N_JOBS)
-                ASForest_RI.fit(train_X, train_y, test_X, test_y)
-                ASForest_acc.append(ASForest_RI.EnsembleACC[-1])
-            ASForest_RI_ACC.append(ASForest_acc)
-
-            # ASTree_RC
-            ASForest_acc = []
-            for i in leaf_nodes:
-                ASTree_RC = ASTree(max_patch=i, n_jobs=1, task='clf', RC='T')
-                ASForest_RC = ASForest(ASTree_RC, Num_of_Learners, n_jobs=N_JOBS)
-                ASForest_RC.fit(train_X, train_y, test_X, test_y)
-                ASForest_acc.append(ASForest_RC.EnsembleACC[-1])
-            ASForest_RC_ACC.append(ASForest_acc)
+                Tree = BT(max_leafs=i, n_jobs=1, task='clf')
+                clf = BF(Tree, Num_of_Learners, n_jobs=N_JOBS)
+                clf.fit(train_X, train_y, test_X, test_y)
+                BoostForest_acc.append(clf.EnsembleACC[-1])
+            BoostForest_ACC.append(BoostForest_acc)
 
         # Save
         Result = []
         Result.append(RF_ACC)
         Result.append(ERT_ACC)
         Result.append(LGBM_ACC)
-        Result.append(ASForest_RI_ACC)
-        Result.append(ASForest_RC_ACC)
+        Result.append(BoostForest_ACC)
         Result = np.array(Result)
         save_path = save_folder + '/ACC_' + data_name
         np.save(save_path, Result)
