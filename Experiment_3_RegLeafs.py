@@ -1,12 +1,12 @@
 import os
 import pandas as pd
 import numpy as np
-from src.ASTree import ASTree
+from src.BoostTree import BT
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import RepeatedKFold
 from sklearn import preprocessing
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
-from src.ASForest import ASForest
+from src.BoostForest import BF
 from sklearn.model_selection import GridSearchCV
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
@@ -49,8 +49,7 @@ if __name__ == "__main__":
         print('load data:', data_name)
         print('X :', X.shape, '|label :', y.shape)
 
-        ASForest_RI_Loss = []
-        ASForest_RC_Loss = []
+        BoostForest_Loss = []
         RF_Loss = []
         ERT_Loss = []
         XGB_Loss = []
@@ -130,30 +129,22 @@ if __name__ == "__main__":
                 LGBM_loss.append(loss)
             LGBM_Loss.append(LGBM_loss)
 
-            # ASForest_RI
-            ASForest_loss = []
+            # 
+            BoostForest_loss = []
             for i in leaf_nodes:
-                ASTree_RI = ASTree(max_patch=i, n_jobs=1, task='reg', RC='F')
-                ASForest_RI = ASForest(ASTree_RI, Num_of_Learners, n_jobs=N_JOBS)
-                ASForest_RI.fit(train_X, train_y, test_X, test_y)
-                ASForest_loss.append(ASForest_RI.EnsembleLoss[-1])
-            ASForest_RI_Loss.append(ASForest_loss)
+                Tree = BT(max_leafs=i, n_jobs=1, task='reg')
+                reg = BF(Tree, Num_of_Learners, n_jobs=N_JOBS)
+                reg.fit(train_X, train_y, test_X, test_y)
+                BoostForest_loss.append(reg.EnsembleLoss[-1])
+            BoostForest_Loss.append(BoostForest_loss)
 
-            # ASForest_RC
-            ASForest_loss = []
-            for i in leaf_nodes:
-                ASTree_RC = ASTree(max_patch=i, n_jobs=1, task='reg', RC='F')
-                ASForest_RC = ASForest(ASTree_RC, Num_of_Learners, n_jobs=N_JOBS)
-                ASForest_RC.fit(train_X, train_y, test_X, test_y)
-                ASForest_loss.append(ASForest_RC.EnsembleLoss[-1])
-            ASForest_RC_Loss.append(ASForest_loss)
+
         # Save
         Result = []
         Result.append(RF_Loss)
         Result.append(ERT_Loss)
         Result.append(LGBM_Loss)
-        Result.append(ASForest_RI_Loss)
-        Result.append(ASForest_RC_Loss)
+        Result.append(BoostForest_Loss)
         Result = np.array(Result)
         save_path = save_folder + '/RMSE_' + data_name
         np.save(save_path, Result)
