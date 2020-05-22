@@ -1,9 +1,9 @@
 import os
 import numpy as np
-from src.ASTree import ASTree
+from src.BoostTree import BT
 from sklearn.model_selection import RepeatedKFold
 from sklearn import preprocessing
-from src.ASForest import ASForest
+from src.BoostForest import BF
 from src.Get_RF_Result import get_RF_result
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
@@ -68,8 +68,7 @@ if __name__ == "__main__":
         print('X :', X.shape, '|label :', y.shape)
         _, y = np.unique(y, return_inverse=True)
         #
-        ASForest_RI_ACC = []
-        ASForest_RC_ACC = []
+        BoostForest_ACC = []
         RF_ACC = []
         ERT_ACC = []
         XGB_ACC = []
@@ -126,24 +125,18 @@ if __name__ == "__main__":
             clf.fit(train_X, train_y)
             LGBM_ACC.append(get_LGBM_result(clf.best_estimator_, test_X, test_y, 'clf'))
 
-            # ASForest_RI
-            ASTree_RI = ASTree(max_patch=max_leafs, n_jobs=1, task='clf', RC='F')
-            ASForest_RI = ASForest(ASTree_RI, Num_of_Learners, n_jobs=N_JOBS)
-            ASForest_RI.fit(train_X, train_y, test_X, test_y)
-            ASForest_RI_ACC.append(ASForest_RI.EnsembleACC)
-            # ASForest_RC
-            ASTree_RC = ASTree(max_patch=max_leafs, n_jobs=1, task='clf', RC='T')
-            ASForest_RC = ASForest(ASTree_RC, Num_of_Learners, n_jobs=N_JOBS)
-            ASForest_RC.fit(train_X, train_y, test_X, test_y)
-            ASForest_RC_ACC.append(ASForest_RC.EnsembleACC)
+            # 
+            Tree = BT(max_patch=max_leafs, n_jobs=1, task='clf')
+            clf = BF(Tree, Num_of_Learners, n_jobs=N_JOBS)
+            clf.fit(train_X, train_y, test_X, test_y)
+            BoostForest_ACC.append(clf.EnsembleACC)
         # Save
         Result = []
         Result.append(RF_ACC)
         Result.append(ERT_ACC)
         Result.append(XGB_ACC)
         Result.append(LGBM_ACC)
-        Result.append(ASForest_RI_ACC)
-        Result.append(ASForest_RC_ACC)
+        Result.append(BoostForest_ACC)
         Result = np.array(Result)
         save_path = save_folder + '/ACC_' + data_name
         np.save(save_path, Result)
