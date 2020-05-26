@@ -37,6 +37,6 @@ if __name__ == "__main__":
     test_y = test_y.reshape(-1, )
     ##
     single_tree = BT(max_leafs=max_leafs, n_jobs=1, task='reg')
-    clf = BF(single_tree, Num_of_Learners, n_jobs=N_JOBS)
-    clf.fit(train_X, train_y, test_X, test_y)
-    print('Ensemble RMSE on testing samples:', clf.EnsembleLoss)
+    reg = BF(single_tree, Num_of_Learners, n_jobs=N_JOBS)
+    reg.fit(train_X, train_y, test_X, test_y)
+    print('Ensemble RMSE on testing samples:', reg.EnsembleLoss)
