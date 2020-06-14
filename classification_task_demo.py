@@ -1,6 +1,6 @@
 '''
 Demo of BoostForest in classification task
-@author: ChangmingZhao,Time:2020/05/06
+@author: ChangmingZhao,Time:2020/06/14
 @e-mail: cmzhao@hust.edu.cn
 '''
 import os
