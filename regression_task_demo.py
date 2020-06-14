@@ -1,6 +1,6 @@
 '''
 Demo of BoostForest in regression task
-@author: ChangmingZhao,Time:2020/05/20
+@author: ChangmingZhao,Time:2020/06/14
 @e-mail: cmzhao@hust.edu.cn
 '''
 import os
