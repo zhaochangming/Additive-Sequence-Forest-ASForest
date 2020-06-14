@@ -26,7 +26,7 @@ class BT(object):
         self.train_Loss = []
         self.train_X = None
         self.train_y = None
-        self.patch_num = 1
+        self.leaf_num = 1
         self.verbose = False
         self.n_classes = None
         self.feature_demension = None
@@ -97,6 +97,7 @@ class BT(object):
                 self.categorical_feature_index.append(j_feature)
         # Construct tree
         self._build_tree()
+        del self.train_X, self.train_y, self.train_label
 
     # ======================
     # Predict Prob
@@ -227,7 +228,18 @@ class BT(object):
         loss_temp = []
         loss_temp.append(self.tree["n_samples"] * self.tree["loss"])
         # split and traverse root node
-        self._split_traverse_node(self.tree, container, node_temp, loss_temp)
+        split_index = 0
+        while split_index >= 0:
+            node_temp, loss_temp, split_index = self._split_traverse_node(
+                node_temp[split_index], container, node_temp, loss_temp)
+        # del data
+        while True:
+            if max(loss_temp) == 0:
+                break
+            else:
+                max_index = loss_temp.index(max(loss_temp))
+                loss_temp[node_temp[max_index]["index"]] = 0
+                del node_temp[max_index]["data"]
 
     # Recursively split node + traverse node until a terminal node is reached
     def _split_traverse_node(self, node, container, node_temp, loss_temp):
@@ -236,6 +248,8 @@ class BT(object):
         """
         # Perform split and collect result
         result = self._splitter(node)
+        del node["data"]
+        loss_temp[node["index"]] = 0
         # Return terminal node if split is not advised
         if not result["did_split"]:
 
@@ -244,23 +258,22 @@ class BT(object):
                 print(" {}*leaf {} @ depth {}: loss={:.6f}, N={}".format(
                     depth_spacing_str, node["index"], node["depth"], node["loss"],
                     node["n_samples"]))
-            #
+            # #
             if self.max_leafs is None:
-                max_leafs_condition = True
+                max_leaf_condition = True
             else:
-                max_leafs_condition = (self.patch_num < self.max_leafs)
-            if max_leafs_condition:
-                loss_temp[node["index"]] = 0
+                max_leaf_condition = (self.leaf_num < self.max_leafs)
+            if max_leaf_condition:
+                # del data in leaf node
                 if max(loss_temp) == 0:
-                    return
+                    return node_temp, loss_temp, -1
                 split_index = loss_temp.index(max(loss_temp))
-                self._split_traverse_node(node_temp[split_index], container, node_temp, loss_temp)
-            return
+                return node_temp, loss_temp, split_index
+            return node_temp, loss_temp, -1
 
         # Update node information based on splitting result
         node["j_feature"] = result["j_feature"]
         node["threshold"] = result["threshold"]
-        del node["data"]  # delete node stored data
 
         # Extract splitting results
         data_left, data_right = result["data"]
@@ -274,7 +287,7 @@ class BT(object):
             print(" {}node {} @ depth {}: loss={:.6f}, j_feature={}, threshold={:.6f}, N=({},{})".
                   format(depth_spacing_str, node["index"], node["depth"], node["loss"],
                          node["j_feature"], node["threshold"], N_left, N_right))
-        loss_temp[node["index"]] = 0
+        
         # Create children nodes
         node["children"]["left"] = self._create_node(data_left, node["depth"] + 1, container,
                                                      loss_left, model_left)
@@ -285,14 +298,13 @@ class BT(object):
         node_temp.append(node["children"]["right"])
         loss_temp.append(node["children"]["right"]["n_samples"] * node["children"]["right"]["loss"])
 
-        ##
-        self.predict_stagewise()
-        self.patch_num += 1
+        # self.predict_stagewise()  # debug
+        self.leaf_num += 1
         # decide split node
         if max(loss_temp) == 0:
-            return
+            return node_temp, loss_temp, -1
         split_index = loss_temp.index(max(loss_temp))
-        self._split_traverse_node(node_temp[split_index], container, node_temp, loss_temp)
+        return node_temp, loss_temp, split_index
 
     def _splitter(self, node):
         """
@@ -325,7 +337,7 @@ class BT(object):
             if self.max_leafs is None:
                 max_leafs_condition = True
             else:
-                max_leafs_condition = (self.patch_num < self.max_leafs)
+                max_leafs_condition = (self.leaf_num < self.max_leafs)
             if max_leafs_condition and (N >= (min_samples_left + min_samples_right)):
                 # feature_threshold
                 feature_threshold = []
