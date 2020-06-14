@@ -5,7 +5,7 @@ Demo of BoostForest in classification task
 '''
 import os
 import numpy as np
-from src.BoostTree import BT
+from src.BT_BigData import BT
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from src.BoostForest import BF
