@@ -1,7 +1,7 @@
 """
 
 BoostTree for bigdata
-
+Split as XGB
 """
 
 import numpy as np
@@ -317,7 +317,7 @@ class BT(object):
         N = node["n_samples"]
         # Find feature splits that might improve loss
         did_split = False
-        loss_best = node["loss"]
+        # loss_best = node["loss"]
         data_best = None
         models_best = None
         N_left_right = None
@@ -441,7 +441,13 @@ class BT(object):
     def calObj(self, garr, harr):
         self._lambda = 0.1
         self._gamma = 0.1
-        return (-1.0 / 2) * sum(garr)**2 / (sum(harr) + self._lambda) + self._gamma
+        if self.task == 'clf' and self.n_classes > 2:
+            loss_ = self._gamma
+            for j in range(self.n_classes):
+                loss_ += (-1.0 / 2) * sum(garr[:, j])**2 / (sum(harr[:, j]) + self._lambda)
+            return loss_
+        else:
+            return (-1.0 / 2) * sum(garr)**2 / (sum(harr) + self._lambda) + self._gamma
 
     def _fit_model(self, data, alpha=None):
         (X, y, output) = data
@@ -449,7 +455,7 @@ class BT(object):
         if alpha is None:
             alpha = random.sample(self.L2_list, 1)[0]
         model = weight_ridge(alpha)
-        
+
         if self.task == 'clf':
             prob = self.output2prob(output)
             if self.n_classes == 2:
